@@ -1,50 +1,33 @@
-var balloon, database, position;
+var balloon,balloonImage1,balloonImage2;
+var database;
+var height;
 
-function preload() {
-  bgImage = loadImage("images/Hot Air Balloon-01.png");
-  balloonImage1=loadAnimation("images/Hot Air Balloon-02.png");
-  balloonImage2=loadAnimation("images/Hot Air Balloon-02.png","images/Hot Air Balloon-02.png",
-  "images/Hot Air Balloon-02.png","images/Hot Air Balloon-03.png","images/Hot Air Balloon-03.png",
-  "images/Hot Air Balloon-03.png","images/Hot Air Balloon-04.png","images/Hot Air Balloon-04.png",
-  "images/Hot Air Balloon-04.png");
-}
+function preload(){
+   bg =loadImage("Images/cityImage.png");
+   balloonImage1=loadAnimation("Images/HotAirBallon-01.png");
+   balloonImage2=loadAnimation("Images/HotAirBallon-01.png","Images/HotAirBallon-01.png",
+   "Images/HotAirBallon-01.png","Images/HotAirBallon-02.png","Images/HotAirBallon-02.png",
+   "Images/HotAirBallon-02.png","Images/HotAirBallon-03.png","Images/HotAirBallon-03.png","Images/HotAirBallon-03.png");
+  }
 
+//Function to set initial environment
 function setup() {
-  createCanvas(500,500);
-  database = firebase.database();
-  balloon = createSprite(250, 250, 50, 50);
-  balloon.addAnimation("balloonImg", balloonImage1);
-  balloon.scale = 0.3
-  /*var balloonPosition = = database.ref('balloon/height');
-  balloonPosition.on("value", getBalloonPosition, showError);
-  */
+  database=firebase.database();
+  createCanvas(1500,700);
+
+  balloon=createSprite(250,650,150,150);
+  balloon.addAnimation("hotAirBalloon",balloonImage1);
+  balloon.scale=0.5;
+
+  var balloonHeight=database.ref('balloon/height');
+  balloonHeight.on("value",readHeight, showError);
+  textSize(20); 
 }
 
+// function to display UI
 function draw() {
-  background(bgImage);
-  fill("black");
-  text("*Use the arrow keys to move the air balloon!", 10, 20);
+  background(bg);
 
-  //database is to be written in the setup function
-  
-  //these controls are used when we dont access the database.
-  if (keyDown(UP_ARROW)) {
-    balloon.y = balloon.y-10;
-  }
-  
-  if (keyDown(DOWN_ARROW)) {
-    balloon.y = balloon.y+10;
-  }
-  
-  if (keyDown(RIGHT_ARROW)) {
-    balloon.x = balloon.x+10;
-  }
-  
-  if (keyDown(LEFT_ARROW)) {
-    balloon.x = balloon.x-10;
-  }
-/*
-//the height is to be updated when you click the arrows
   if(keyDown(LEFT_ARROW)){
     updateHeight(-10,0);
     balloon.addAnimation("hotAirBalloon",balloonImage2);
@@ -63,30 +46,29 @@ function draw() {
     balloon.addAnimation("hotAirBalloon",balloonImage2);
     balloon.scale=balloon.scale+0.005;
   }
-*/
+
   drawSprites();
+  fill(0);
+  stroke("white");
+  textSize(25);
+  text("**Use arrow keys to move Hot Air Balloon!",40,40);
 }
 
-/*function updateHeight(x,y) {
+
+function updateHeight(x,y){
   database.ref('balloon/height').set({
-    'x': height.x+x,
-    'y': height.y+y
-  });
+    'x': height.x + x ,
+    'y': height.y + y
+  })
 }
 
-function getBalloonPosition(data) {
+function readHeight(data){
   height = data.val();
+  //console.log(height.x);
   balloon.x = height.x;
   balloon.y = height.y;
 }
 
-function showError() {
+function showError(){
   console.log("Error in writing to the database");
 }
-
-in database (FYR)
-  balloon
-    height
-      x: 200
-      y: 100
-*/
